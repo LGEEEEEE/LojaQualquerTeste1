@@ -102,3 +102,5 @@ def inject_cart_count():
     return dict(cart_item_count=count)
 
 from app import routes
+from app.routes import routes
+app.register_blueprint(routes)
