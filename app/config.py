@@ -1,4 +1,5 @@
-# Lê a URL do banco de dados do ambiente
+import os
+
 database_url = os.getenv("DATABASE_URL")
 
 # Se a URL existir e for de um banco Postgres, ajusta para usar o driver 'psycopg'
