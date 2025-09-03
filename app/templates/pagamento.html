@@ -79,7 +79,7 @@
         document.getElementById('payment-brick-container').style.display = 'none';
         document.getElementById('success-message').style.display = 'block';
         setTimeout(() => {
-            window.location.href = "{{ url_for('minha_conta') }}";
+            window.location.href = "{{ url_for('routes.minha_conta') }}";
         }, 3000);
     }
 </script>
