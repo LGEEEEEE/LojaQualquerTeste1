@@ -1,6 +1,6 @@
 # app/routes.py
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
-from app.models import Usuario, Produto, Pedido, ItemPedido
+from app.models import User, Produto, Pedido, ItemPedido
 from app import db, bcrypt
 from flask_login import login_user, logout_user, login_required, current_user
 import mercadopago
@@ -23,17 +23,17 @@ def index():
 @routes.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        nome = request.form["nome"]
+        username = request.form["nome"]
         email = request.form["email"]
         senha = request.form["senha"]
 
-        usuario_existente = Usuario.query.filter_by(email=email).first()
+        usuario_existente = User.query.filter_by(email=email).first()
         if usuario_existente:
             flash("E-mail já cadastrado", "danger")
             return redirect(url_for("routes.register"))
 
         hashed_pw = bcrypt.generate_password_hash(senha).decode("utf-8")
-        novo_usuario = Usuario(nome=nome, email=email, senha=hashed_pw)
+        novo_usuario = User(username=username, email=email, password_hash=hashed_pw)
 
         db.session.add(novo_usuario)
         db.session.commit()
@@ -52,8 +52,8 @@ def login():
         email = request.form["email"]
         senha = request.form["senha"]
 
-        usuario = Usuario.query.filter_by(email=email).first()
-        if usuario and bcrypt.check_password_hash(usuario.senha, senha):
+        usuario = User.query.filter_by(email=email).first()
+        if usuario and bcrypt.check_password_hash(usuario.password_hash, senha):
             login_user(usuario)
             flash("Login realizado com sucesso!", "success")
             return redirect(url_for("routes.index"))
@@ -120,7 +120,7 @@ def checkout():
 
     try:
         # Criar o pedido no banco
-        novo_pedido = Pedido(usuario_id=current_user.id, total=total_final, status="Pendente")
+        novo_pedido = Pedido(user_id=current_user.id, total=total_final, status="Pendente")
         db.session.add(novo_pedido)
         db.session.commit()
 
